@@ -23,11 +23,17 @@ void Scene::init(SDL_Renderer* renderer) {
     for (int y = 0; y < 18; y++) {
         for (int x = 0; x < 25; x++) {
             if (x == 0 || y == 0 || x == 24 || y == 17)
-                gTilemap->setTile(x, y, 1, true);
+                // gTilemap->setTile(x, y, 1, true);
+                gTilemap->setTile(x, y, 1, true, 1); // height = 1 → wall
             else
                 gTilemap->setTile(x, y, 0, false);
         }
     }
+
+    // ===== TEST WALLS (ADD HERE) =====
+    gTilemap->setWall(5, 5, 2, 2);
+    gTilemap->setWall(6, 5, 2, 2);
+    gTilemap->setWall(7, 5, 2, 2);
 
     player = new Entity(100, 100, playerSprite);
     player->isPlayer = true;
@@ -50,7 +56,8 @@ void Scene::render() {
 
     std::sort(entities.begin(), entities.end(),
         [](Entity* a, Entity* b) {
-            return a->y < b->y;
+            // return a->y < b->y;
+              return (a->y + a->z) < (b->y + b->z);
         });
 
     for (auto e : entities)
