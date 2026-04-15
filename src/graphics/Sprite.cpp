@@ -27,7 +27,42 @@ void Sprite::setAnimation(int fw, int fh, int count) {
     frameCount = count;
 }
 
+// void Sprite::draw(int x, int y, int scale) {
+//     if (frameCount > 1) {
+//         frameTimer += Time::deltaTime;
+//         if (frameTimer >= 1.0f / animationSpeed) {
+//             currentFrame = (currentFrame + 1) % frameCount;
+//             frameTimer = 0.0f;
+//         }
+//     }
+//
+//     SDL_Rect src;
+//
+//     if (frameWidth > 0) {
+//         src = { currentFrame * frameWidth, 0, frameWidth, frameHeight };
+//     } else {
+//         src = {0, 0, width, height};
+//     }
+//
+//     SDL_Rect dst = {
+//         // x - Camera::x,
+//         // y - Camera::y,
+//         int screenX = (x - y) / 2 - Camera::x;
+//     int screenY = (x + y) / 4 - Camera::y;
+//
+//     SDL_Rect dst = {
+//         screenX,
+//         screenY,
+//         src.w * scale,
+//         src.h * scale
+//     };
+//
+//
+//     src.w * scale,
+//         src.h * scale
+// };
 void Sprite::draw(int x, int y, int scale) {
+    // Animation update
     if (frameCount > 1) {
         frameTimer += Time::deltaTime;
         if (frameTimer >= 1.0f / animationSpeed) {
@@ -36,20 +71,35 @@ void Sprite::draw(int x, int y, int scale) {
         }
     }
 
+    // Source rectangle (sprite sheet)
     SDL_Rect src;
-
     if (frameWidth > 0) {
-        src = { currentFrame * frameWidth, 0, frameWidth, frameHeight };
+        src = {
+            currentFrame * frameWidth,
+            0,
+            frameWidth,
+            frameHeight
+        };
     } else {
         src = {0, 0, width, height};
     }
 
+    // ✅ CORRECT: calculate screen position FIRST
+    // int screenX = (x - y) / 2 - Camera::x;
+    // int screenY = (x + y) / 4 - Camera::y;
+    int screenX = x - Camera::x;
+int screenY = y - Camera::y;
+
+    // Then create destination rect
     SDL_Rect dst = {
-        x - Camera::x,
-        y - Camera::y,
+        screenX,
+        screenY,
         src.w * scale,
         src.h * scale
     };
 
     SDL_RenderCopy(Renderer::sdlRenderer, texture, &src, &dst);
 }
+
+//     SDL_RenderCopy(Renderer::sdlRenderer, texture, &src, &dst);
+// }
