@@ -31,9 +31,12 @@ void Scene::init(SDL_Renderer* renderer) {
     }
 
     // ===== TEST WALLS (ADD HERE) =====
-    gTilemap->setWall(5, 5, 2, 2);
-    gTilemap->setWall(6, 5, 2, 2);
-    gTilemap->setWall(7, 5, 2, 2);
+    // gTilemap->setWall(5, 5, 2, 2);
+    // gTilemap->setWall(6, 5, 2, 2);
+    // gTilemap->setWall(7, 5, 2, 2);
+    gTilemap->setWall(5, 5, 1, 3);
+    gTilemap->setWall(6, 5, 1, 3);
+    gTilemap->setWall(7, 5, 1, 3);
 
     player = new Entity(100, 100, playerSprite);
     player->isPlayer = true;

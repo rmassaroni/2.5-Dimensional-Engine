@@ -59,14 +59,24 @@ void Tilemap::render() {
             Tile& wall = wallTiles[y * width + x];
 
             if (wall.id != 0) {
-                int wx = x * tileSize - Camera::x;
-                int wy = y * tileSize - Camera::y - wall.height * tileSize;
+                // int wx = x * tileSize - Camera::x;
+                // int wy = y * tileSize - Camera::y - wall.height * tileSize;
+                //
+                // SDL_Rect src = { wall.id * tileSize, 0, tileSize, tileSize };
+                // SDL_Rect dst = { wx, wy, tileSize, tileSize };
+                //
+                // SDL_RenderCopy(Renderer::sdlRenderer,
+                //                tileset->texture, &src, &dst);
+                SDL_SetRenderDrawColor(Renderer::sdlRenderer, 255, 0, 0, 255);
 
-                SDL_Rect src = { wall.id * tileSize, 0, tileSize, tileSize };
-                SDL_Rect dst = { wx, wy, tileSize, tileSize };
+                SDL_Rect debugRect = {
+                    x * tileSize - Camera::x,
+                    y * tileSize - Camera::y - 100, // push it up so you SEE it
+                    tileSize,
+                    tileSize
+                };
 
-                SDL_RenderCopy(Renderer::sdlRenderer,
-                               tileset->texture, &src, &dst);
+    SDL_RenderFillRect(Renderer::sdlRenderer, &debugRect);
             }
         }
     }
