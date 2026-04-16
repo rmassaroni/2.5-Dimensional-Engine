@@ -18,4 +18,5 @@ private:
     void drawTile(int tileId, int screenX, int screenY);
     void drawTileScaled(int tileId, int screenX, int screenY, int drawWidth, int drawHeight);
     bool hasSolidNeighbor(int x, int y);
+    int computeWallWidth(int playerX, int tileX);
 };

@@ -32,6 +32,20 @@ bool Tilemap::hasSolidNeighbor(int x, int y) {
     return tiles[y * width + x].height > 0;
 }
 
+int Tilemap::computeWallWidth(int playerX, int tileX) {
+    int dx = playerX - (tileX * tileSize);
+    int absDx = dx < 0 ? -dx : dx;
+
+    int minW = 6;               // thinnest
+    int maxW = tileSize;        // full width (32)
+
+    int w = maxW - (absDx / 8); // tweak divisor for strength
+    if (w < minW) w = minW;
+    if (w > maxW) w = maxW;
+
+    return w;
+}
+
 void Tilemap::drawTile(int tileId, int screenX, int screenY) {
     if (!tileset || !tileset->texture) {
         return;
@@ -115,6 +129,8 @@ void Tilemap::render(int playerX, int playerY) {
             bool hasFront = hasSolidNeighbor(x, y + 1); // below
             bool hasBack  = hasSolidNeighbor(x, y - 1); // above
 
+            int wallW = computeWallWidth(playerX, x);
+
             for (int level = 0; level < t.height; level++) {
                 int faceY = baseScreenY - (level * tileSize);
 
@@ -122,14 +138,17 @@ void Tilemap::render(int playerX, int playerY) {
                     // drawTile(RIGHT_WALL, baseScreenX, faceY);
                     // drawTileScaled(RIGHT_WALL, baseScreenX, faceY, wallWidth, tileSize);
                     if (!hasRight) {
-                        drawTile(RIGHT_WALL, baseScreenX, faceY);
+                        // drawTile(RIGHT_WALL, baseScreenX, faceY);
+                        drawTileScaled(RIGHT_WALL, baseScreenX, faceY, wallW, tileSize);
                     }
                 } else {
                     // drawTile(LEFT_WALL, baseScreenX, faceY);
                     //  int shiftedX = baseScreenX + (tileSize - wallWidth);
                     // drawTileScaled(LEFT_WALL, shiftedX, faceY, wallWidth, tileSize);
                     if (!hasLeft) {
-                        drawTile(LEFT_WALL, baseScreenX, faceY);
+                        // drawTile(LEFT_WALL, baseScreenX, faceY);
+                        int shiftedX = baseScreenX + (tileSize - wallW);
+                        drawTileScaled(LEFT_WALL, shiftedX, faceY, wallW, tileSize);
                     }
                 }
             }
