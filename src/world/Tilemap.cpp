@@ -25,6 +25,13 @@ bool Tilemap::isSolid(int x, int y) {
     return tiles[y * width + x].solid;
 }
 
+bool Tilemap::hasSolidNeighbor(int x, int y) {
+    if (x < 0 || y < 0 || x >= width || y >= height)
+        return false;
+
+    return tiles[y * width + x].height > 0;
+}
+
 void Tilemap::drawTile(int tileId, int screenX, int screenY) {
     if (!tileset || !tileset->texture) {
         return;
@@ -103,16 +110,27 @@ void Tilemap::render(int playerX, int playerY) {
             if (wallWidth < minWidth) wallWidth = minWidth;
             if (wallWidth > maxWidth) wallWidth = maxWidth;
 
+            bool hasLeft  = hasSolidNeighbor(x - 1, y);
+            bool hasRight = hasSolidNeighbor(x + 1, y);
+            bool hasFront = hasSolidNeighbor(x, y + 1); // below
+            bool hasBack  = hasSolidNeighbor(x, y - 1); // above
+
             for (int level = 0; level < t.height; level++) {
                 int faceY = baseScreenY - (level * tileSize);
 
                 if (playerIsRight) {
                     // drawTile(RIGHT_WALL, baseScreenX, faceY);
-                    drawTileScaled(RIGHT_WALL, baseScreenX, faceY, wallWidth, tileSize);
+                    // drawTileScaled(RIGHT_WALL, baseScreenX, faceY, wallWidth, tileSize);
+                    if (!hasRight) {
+                        drawTile(RIGHT_WALL, baseScreenX, faceY);
+                    }
                 } else {
                     // drawTile(LEFT_WALL, baseScreenX, faceY);
-                     int shiftedX = baseScreenX + (tileSize - wallWidth);
-                    drawTileScaled(LEFT_WALL, shiftedX, faceY, wallWidth, tileSize);
+                    //  int shiftedX = baseScreenX + (tileSize - wallWidth);
+                    // drawTileScaled(LEFT_WALL, shiftedX, faceY, wallWidth, tileSize);
+                    if (!hasLeft) {
+                        drawTile(LEFT_WALL, baseScreenX, faceY);
+                    }
                 }
             }
 
